@@ -169,18 +169,12 @@ function generateStory() {
 }
 
 function shareToWhatsApp() {
-    if(!finalStory) return;
-    
-    // 1. Clean up the text by removing special formatting characters for the URL
+    if (!finalStory) return;
+
     let cleanText = "Look at this story I just generated! 😂\n\n" + finalStory;
-    
-    // 2. Safely encode the entire message text
     let encodedText = encodeURIComponent(cleanText);
-    
-    // 3. Create the perfect, clean WhatsApp link
-    let whatsappUrl = "https://whatsapp.com" + encodedText;
-    
-    // 4. Open WhatsApp
+    let whatsappUrl = "https://wa.me/?text=" + encodedText;
+
     window.open(whatsappUrl, '_blank');
 }
 </script>

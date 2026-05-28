@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaos Story Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 { color: #333; margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        input:focus { border-color: #764ba2; outline: none; }
+        button {
+            background: #764ba2;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+        button:hover { background: #5a377e; }
+        .result-box {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f3f0f7;
+            border-left: 5px solid #764ba2;
+            border-radius: 4px;
+            text-align: left;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .share-btn {
+            background: #25D366;
+            margin-top: 15px;
+            display: none;
+        }
+        .share-btn:hover { background: #128C7E; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>🤪 Chaos Story Generator</h1>
+    
+    <div class="input-group">
+        <label>Enter a Name:</label>
+        <input type="text" id="name" placeholder="e.g. Bob">
+    </div>
+    
+    <div class="input-group">
+        <label>Enter an Action (Verb):</label>
+        <input type="text" id="verb" placeholder="e.g. dancing, baked">
+    </div>
+    
+    <div class="input-group">
+        <label>Enter a Thing (Noun):</label>
+        <input type="text" id="noun" placeholder="e.g. noodles, a toaster">
+    </div>
+    
+    <button onclick="generateStory()">✨ Generate Story</button>
+    
+    <div id="storyOutput" class="result-box"></div>
+    <button id="shareBtn" class="share-btn" onclick="shareToWhatsApp()">📲 Share Story to WhatsApp</button>
+</div>
+
+<script>
+function cleanVerb(verb) {
+    verb = verb.toLowerCase().trim();
+    if (verb.endsWith("ing")) {
+        return verb.slice(0, -3) + "e";
+    }
+    if (verb.endsWith("ed")) {
+        let base = verb.slice(0, -2);
+        if (base.endsWith("c") || base.endsWith("k")) {
+            return base + "e";
+        }
+        return base;
+    }
+    return verb;
+}
+
+const stories = [
+    "A leaked memo reveals [PERSON] spent $4.2 million to [VERB] [NOUN] in international waters, where apparently no laws apply. Their lawyer said 'no comment'.",
+    "[PERSON] was escorted out of a Costco today after attempting to [VERB] [NOUN] in the frozen food aisle. Staff described the scene as 'disturbingly committed'.",
+    "NASA scientists confirmed that [PERSON] has been secretly using [NOUN] to [VERB] from their basement since 1987. The UN has called an emergency meeting.",
+    "A whistleblower has revealed that [PERSON] pays a full-time assistant $200,000 a year just to [VERB] [NOUN] before every meal. The assistant says it's 'honestly fine'.",
+    "[PERSON] crashed a live presidential debate simply to [VERB] [NOUN] on stage, then left without a word. Polls show their approval rating went up 34%.",
+    "[PERSON] was denied entry to the museum after guards discovered they were smuggling [NOUN] inside their coat specifically to [VERB] it near the Mona Lisa.",
+    "[PERSON] has quietly spent 11 years training a team of professionals to [VERB] [NOUN] on their behalf. The team has never lost. Nobody knows what that means.",
+    "Authorities are investigating after [PERSON] attempted to legally [VERB] [NOUN] at a children's birthday party. The birthday child called it 'the best part'.",
+    "[PERSON]'s newly published memoir dedicates an entire 47-page chapter to the time they tried to [VERB] [NOUN] at the Oscars and almost got away with it.",
+    "A declassified government document shows that in 2003, world leaders agreed to let [PERSON] [VERB] [NOUN] once a year, unsupervised, no questions asked. The document smells faintly of regret."
+];
+
+let finalStory = "";
+
+function generateStory() {
+    let rawName = document.getElementById('name').value.trim();
+    let rawVerb = document.getElementById('verb').value;
+    let rawNoun = document.getElementById('noun').value.trim();
+    
+    if(!rawName || !rawVerb || !rawNoun) {
+        alert("Please fill out all fields!");
+        return;
+    }
+    
+    let processedName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+    let processedVerb = cleanVerb(rawVerb);
+    
+    let randomTemplate = stories[Math.floor(Math.random() * stories.length)];
+    
+    finalStory = randomTemplate
+        .replace("[PERSON]", `*${processedName}*`)
+        .replace("[VERB]", `_${processedVerb}_`)
+        .replace("[NOUN]", `*${rawNoun}*`);
+        
+    let outputDiv = document.getElementById('storyOutput');
+    outputDiv.innerText = finalStory.replace(/\*|_/g, ""); 
+    outputDiv.style.display = "block";
+    
+    document.getElementById('shareBtn').style.display = "block";
+}
+
+function shareToWhatsApp() {
+    if(!finalStory) return;
+    let whatsappUrl = `https://whatsapp.com{encodeURIComponent("Look at this story I just generated! 😂\n\n" + finalStory)}`;
+    window.open(whatsappUrl, '_blank');
+}
+</script>
+
+</body>
+</html>
